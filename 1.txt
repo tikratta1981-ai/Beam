@@ -1,0 +1,148 @@
+โครงสร้างโปรเจกต์ Beam Farm (B.P.) — showcase-studio-16_9
+============================================================
+
+├── public/   # ไฟล์ static (รูปพื้นหลัง, อาคาร, โลโก้)
+│   ├── assets/
+│   │   └── aistudio/
+│   │       └── .gitignore
+│   ├── buildings/   # รูปสิ่งก่อสร้าง/แปลงพืช/สัตว์ (PNG)
+│   │   └── (22 ไฟล์รูป)
+│   ├── avatar.png
+│   ├── farm_bg.jpg
+│   ├── fishing_lake_bg.jpg
+│   ├── loading_screen.jpg
+│   └── logo_bp.png
+├── src/   # โค้ดหลักของเกม
+│   ├── amulet/   # ส่วนขยาย amulet
+│   │   └── amulet-extension.ts
+│   ├── assets/
+│   │   └── images/   # รูปอวาตาร์/โลโก้/พื้นหลัง
+│   │       └── (7 ไฟล์รูป)
+│   ├── audio/   # ระบบเสียงแบบ tier
+│   │   └── audio-tier.ts
+│   ├── avatar/   # ตัวเรนเดอร์อวาตาร์
+│   │   └── avatar-renderer.ts
+│   ├── components/   # คอมโพเนนต์ UI ทั้งหมด
+│   │   ├── 3d/   # โมเดล/ฉาก 3D (three.js)
+│   │   │   ├── Bakery3D.tsx
+│   │   │   ├── BakeryOven3D.tsx
+│   │   │   ├── Chicken3D.tsx
+│   │   │   ├── CornPlot3D.tsx
+│   │   │   ├── Cow3D.tsx
+│   │   │   ├── Dairy3D.tsx
+│   │   │   ├── DraggableCorn3D.tsx
+│   │   │   ├── EmeraldLake3D.tsx
+│   │   │   ├── FarmCharacters3D.tsx
+│   │   │   ├── FarmCrops3D.tsx
+│   │   │   ├── HarvestEffect3D.tsx
+│   │   │   ├── House3D.tsx
+│   │   │   ├── Jam3D.tsx
+│   │   │   ├── LightningClawLogo3D.tsx
+│   │   │   ├── Pig3D.tsx
+│   │   │   ├── Plot3D.tsx
+│   │   │   ├── Sheep3D.tsx
+│   │   │   ├── SickleTool3D.tsx
+│   │   │   ├── Tree3D.tsx
+│   │   │   ├── Truck3D.tsx
+│   │   │   └── Well3D.tsx
+│   │   ├── common/   # คอมโพเนนต์ใช้ร่วม (Toast)
+│   │   │   └── Toast.tsx
+│   │   ├── farm/   # ปุ่มควบคุมแผนที่, เครื่องมือเก็บเกี่ยว, แคตตาล็อกก่อสร้าง
+│   │   │   ├── BuildableCatalogModal.tsx
+│   │   │   ├── EntityToolbar.tsx
+│   │   │   ├── FarmControls.tsx   # ปุ่มจัดวางฟาร์ม/ซูม/เปลี่ยนเวลา
+│   │   │   ├── HarvestSystem.ts
+│   │   │   └── HarvestTool.tsx
+│   │   ├── modals/   # หน้าต่างป๊อปอัป (ร้านค้า คลัง ภารกิจ ตั้งค่า ตกปลา ฯลฯ)
+│   │   │   ├── AiChodChatModal.tsx
+│   │   │   ├── AnimalCareModal.tsx
+│   │   │   ├── AppModals.tsx
+│   │   │   ├── AuthModal.tsx
+│   │   │   ├── BuildModal.tsx
+│   │   │   ├── CloudSyncModal.tsx
+│   │   │   ├── DailyRewardsModal.tsx
+│   │   │   ├── EventsModal.tsx
+│   │   │   ├── FishingDockModal.tsx
+│   │   │   ├── FriendsModal.tsx
+│   │   │   ├── GiftBoxModal.tsx
+│   │   │   ├── InventoryModal.tsx
+│   │   │   ├── LevelUpModal.tsx
+│   │   │   ├── LogoInfoModal.tsx
+│   │   │   ├── MailModal.tsx
+│   │   │   ├── MarketModal.tsx
+│   │   │   ├── ProductionModal.tsx
+│   │   │   ├── QuestsModal.tsx
+│   │   │   ├── SeedPickerModal.tsx
+│   │   │   ├── SettingsModal.tsx
+│   │   │   ├── ShopModal.tsx
+│   │   │   ├── VisitFriendModal.tsx
+│   │   │   └── WorldMapModal.tsx
+│   │   ├── AmuletExtensionPanel.tsx
+│   │   ├── AudioPanel.tsx
+│   │   ├── BottomDock.tsx   # แถบเมนูล่าง
+│   │   ├── DocumentationModal.tsx
+│   │   ├── ExportModal.tsx
+│   │   ├── FarmWorld.tsx   # แผนที่ฟาร์ม: ซูม/แพน/ลากวางของ
+│   │   ├── LeftMenu.tsx   # เมนูซ้าย (ภารกิจ กิจกรรม รายวัน)
+│   │   ├── LoadingScreen.tsx
+│   │   ├── PhysicsPanel.tsx
+│   │   ├── PlayerHeader.tsx
+│   │   ├── RightMenu.tsx   # เมนูขวา (ร้านค้า ตลาด ของขวัญ)
+│   │   ├── Skeleton3DPanel.tsx
+│   │   ├── StudioCanvas169.tsx
+│   │   ├── TopHUD.tsx   # แถบบน: โปรไฟล์ เหรียญ เพชร พลังงาน
+│   │   └── WorldMapModal.tsx
+│   ├── data/   # ข้อมูลเกม (พืช สูตร เควสต์ แผนที่ ตกปลา เลย์เอาต์ฟาร์ม)
+│   │   ├── farmWorldData.ts   # ขนาดเวที 1440x960, ผังเริ่มต้น, แคตตาล็อกสิ่งก่อสร้าง
+│   │   ├── fishingData.ts
+│   │   ├── gameConstants.ts
+│   │   ├── initialData.ts
+│   │   └── worldMapData.ts
+│   ├── export/   # ส่งออกวิดีโอ/แชร์ Facebook
+│   │   ├── fb-share.ts
+│   │   └── video-exporter.ts
+│   ├── physics/   # ฟิสิกส์ (ผม, TMJ)
+│   │   ├── hair-rig.ts
+│   │   └── tmj-engine.ts
+│   ├── security/   # ระบบความปลอดภัย (anti-cheat, crypto, rate limit, secure storage)
+│   │   ├── antiCheat.ts
+│   │   ├── crypto.ts
+│   │   ├── index.ts
+│   │   ├── integrity.ts
+│   │   ├── rateLimiter.ts
+│   │   ├── sanitizer.ts
+│   │   ├── secureStorage.ts
+│   │   ├── securityLog.ts
+│   │   └── timeGuard.ts
+│   ├── three/   # เอนจิน 3D กายวิภาค
+│   │   └── anatomy-3d-engine.ts
+│   ├── types/   # Type Definitions (game, auth, fishing)
+│   │   ├── auth.ts
+│   │   ├── fishing.ts
+│   │   └── game.ts
+│   ├── utils/   # ยูทิลิตี (เสียง, auth, AI นายชด, สร้างออร์เดอร์, texture)
+│   │   ├── aiChodBrain.ts
+│   │   ├── aiSpeech.ts
+│   │   ├── audio.ts
+│   │   ├── auth.ts
+│   │   ├── orderGenerator.ts
+│   │   └── threeTextures.ts
+│   ├── App.tsx   # สมองหลัก: state เกม, game loop, เซฟเกม, เลย์เอาต์ HUD
+│   ├── index.css   # สไตล์หลัก + Tailwind + โปรไฟล์ Vivo Y17 (หัวข้อ 8)
+│   ├── main.tsx   # จุดเริ่มต้น React + initSecurity()
+│   └── types.ts   # type รวม
+├── .env.example   # ตัวอย่างไฟล์ตัวแปรสภาพแวดล้อม (GEMINI_API_KEY)
+├── .gitignore
+├── bun.lock
+├── index.html   # HTML หลัก + viewport/meta สำหรับมือถือ
+├── metadata.json   # ข้อมูลแอป (AI Studio)
+├── package.json   # รายชื่อไลบรารี และสคริปต์ (dev/build/lint)
+├── README.md
+├── README.txt
+├── README1.txt
+├── tsconfig.json   # ตั้งค่า TypeScript
+├── untitled-1.tsx
+├── untitled-2.tsx
+├── untitled-3.tsx
+├── untitled.tsx
+└── vite.config.ts   # ตั้งค่า Vite + Tailwind + React

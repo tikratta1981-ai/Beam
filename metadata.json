@@ -1,0 +1,6 @@
+{
+  "name": "Beam Farm (B.P.)",
+  "description": "เกมฟาร์ม Beam Farm (B.P.) ปลูกพืช เลี้ยงสัตว์ แปรรูปสินค้า ทำภารกิจ ค้าขาย และส่งของขวัญให้เพื่อน",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

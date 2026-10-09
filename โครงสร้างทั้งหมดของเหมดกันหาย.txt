@@ -1,0 +1,467 @@
+================================================================================
+  โครงสร้างระบบทั้งหมดของแอปพลิเคชัน (ระบบเกมฟาร์มและแอนิเมชัน 3D) - ฉบับกันหาย
+================================================================================
+อัปเดตล่าสุด: วันที่ 9 ตุลาคม 2026
+สถานะระบบ: ผ่านการคอมไพล์และตรวจสอบข้อผิดพลาด (TypeScript & Vite Build 100% ผ่านสมบูรณ์)
+เวอร์ชัน: Production-Ready (Full-Stack Frontend Farm Simulator with 3D Canvas)
+
+--------------------------------------------------------------------------------
+1. ภาพรวมเทคโนโลยีและสถาปัตยกรรม (TECH STACK & ARCHITECTURE)
+--------------------------------------------------------------------------------
+- Framework: React 18 / 19 (SPA) + TypeScript
+- Build Tool: Vite (Port 3000)
+- Styling: Tailwind CSS (Clean Utility-first, Pixel-perfect HUD, Responsive Layout)
+- 3D & Graphics: Three.js (@react-three/fiber, @react-three/drei) + Custom Canvas Procedural 3D Mesh + Isometric SVG 3D Layer
+- Audio Engine: Web Audio API Synthesizer (Chimes, Clicks, Harvest, Ambience, Pop, Coin sfx)
+- Security & Anti-Cheat: In-memory & LocalStorage integrity checks, Crypto, RateLimiter, TimeGuard
+- State Management: 
+  * Centralized App State (App.tsx): ควบคุมวงจรชีวิตหลัก แปลงผัก สิ่งปลูกสร้าง สัตว์เลี้ยง และหน้าต่าง Modal
+  * Modular Farm Store (useFarmStore.ts): ใช้ useSyncExternalStore สำหรับระบบฟาร์ม, หมูหาเห็ดทรัฟเฟิล และคลังสินค้า
+- PWA & Offline Support: Manifest, Service Worker, App Icons
+
+--------------------------------------------------------------------------------
+2. แผนผังโฟลเดอร์และไฟล์ทั้งหมดในโปรเจกต์ (FULL DIRECTORY TREE)
+--------------------------------------------------------------------------------
+
+/
+├── index.html                                 # Entry HTML พร้อม Canvas และ Font Kanit / Inter
+├── metadata.json                              # ข้อมูลและสิทธิ์ของแอปบน AI Studio
+├── package.json                               # รายการ Dependencies และคำสั่ง Build / Lint / Dev
+├── tsconfig.json                              # การตั้งค่า TypeScript Compiler
+├── tsconfig.node.json                         # การตั้งค่า TypeScript Node Environment
+├── vite.config.ts                             # การตั้งค่า Vite (Plugins, Aliases, Server port 3000)
+├── โครงสร้างทั้งหมดของเหมดกันหาย.txt             # เอกสารสรุปโครงสร้างทั้งหมดฉบับนี้ (กันหาย)
+│
+├── public/                                    # ทรัพยากร Static Assets สำหรับเว็บบราวเซอร์
+│   ├── assets/aistudio/.gitignore             # โฟลเดอร์สินทรัพย์ระบบ AI Studio
+│   ├── avatar.png                             # รูปโปรไฟล์ผู้เล่นเริ่มต้น
+│   ├── farm_bg.jpg                            # พื้นหลังฉากฟาร์มหลักความละเอียดสูง
+│   ├── farm2_bg.jpg                           # พื้นหลังฟาร์มระดับ 2 (ทุ่งหญ้ากว้าง)
+│   ├── fishing_lake_bg.jpg                    # พื้นหลังทะเลสาบตกปลา
+│   ├── loading_screen.jpg                     # หน้าจอโหลดเกม
+│   ├── logo_bp.png                            # โลโก้เกมฟาร์ม
+│   ├── manifest.json                          # PWA Web App Manifest
+│   ├── sw.js                                  # Service Worker แคชไฟล์ออฟไลน์
+│   ├── icons/                                 # ไอคอนแอปพลิเคชัน PWA
+│   │   ├── icon-192.png                       # ไอคอนขนาด 192x192
+│   │   ├── icon-512.png                       # ไอคอนขนาด 512x512
+│   │   ├── maskable-192.png                   # ไอคอน Maskable 192x192
+│   │   └── maskable-512.png                   # ไอคอน Maskable 512x512
+│   └── buildings/                             # รูปภาพสิ่งก่อสร้างและแปลงผัก Isometric 2D/3D
+│       ├── bakery_oven.png                    # เตาอบขนมปัง
+│       ├── barn_silo.png                      # ยุ้งฉางเก็บผลผลิต
+│       ├── chicken_coop.png                   # เล้าไก่
+│       ├── cow_pen.png                        # คอกวัว
+│       ├── dairy_stall.png                    # โรงผลิตนม/เนย
+│       ├── farm2_bg.jpg                       # พื้นหลังฟาร์ม
+│       ├── farmhouse.png                      # บ้านชาวสวน
+│       ├── flower_bed.png                     # แปลงดอกไม้
+│       ├── jam_house.png                      # โรงทำแยม
+│       ├── logo_bp.png                        # โลโก้
+│       ├── pig_pen.png                        # คอกหมู
+│       ├── plot_corn.png                      # แปลงข้าวโพด
+│       ├── plot_cucumber.png                  # แปลงแตงกวา
+│       ├── plot_lavender.png                  # แปลงลาเวนเดอร์
+│       ├── plot_tomato.png                    # แปลงมะเขือเทศ
+│       ├── plot_wheat.png                     # แปลงข้าวสาลี
+│       ├── sheep.png                          # แกะ
+│       ├── tree_apple.png                     # ต้นแอปเปิ้ล
+│       ├── truck_blue.png                     # รถกระบะส่งออเดอร์
+│       ├── water_well.png                     # บ่อน้ำ
+│       ├── wood_bridge.png                    # สะพานไม้
+│       └── wooden_boat.png                    # เรือไม้ตกปลา
+│
+└── src/                                       # ซอร์สโค้ดหลักของแอปพลิเคชัน (TypeScript & React)
+    ├── main.tsx                               # จุดเริ่มต้น React DOM Mounting
+    ├── App.tsx                                # แกนกลางของเกม (Game Loop, State, Modals, Handlers)
+    ├── index.css                              # Global CSS และ Tailwind Imports
+    ├── types.ts                               # Root Type Definitions
+    │
+    ├── types/                                 # ข้อมูลประเภท (TypeScript Interfaces/Types)
+    │   ├── index.ts                           # รวมและส่งออก Type ทั้งหมด
+    │   ├── game.ts                            # CropType, Plot, Animal, Item, Quest, Order
+    │   ├── auth.ts                            # User Profile, Session, Role Types
+    │   ├── fishing.ts                         # Fish, Rod, Bait, Catch Result Types
+    │   └── viseme.ts                          # ข้อมูล Viseme สำหรับแอนิเมชันปากตัวละคร
+    │
+    ├── store/                                 # จัดการ Global State แบบแยกส่วน
+    │   └── useFarmStore.ts                    # Farm Store (useSyncExternalStore) จัดการเหรียญ, คลัง, หมูคุ้ยเห็ด
+    │
+    ├── data/                                  # ข้อมูลเริ่มต้นและตารางค่าคงที่
+    │   ├── gameConstants.ts                   # ค่าคงที่อัตราผลตอบแทน, ราคา, เวลาเติบโต
+    │   ├── initialData.ts                     # INITIAL_PLOTS, CROPS, ANIMALS, RECIPES, BUILDINGS
+    │   ├── farmWorldData.ts                   # โครงสร้างแปลงและพิกัดเริ่มต้นของฟาร์ม
+    │   ├── fishingData.ts                     # รายชื่อปลา เหยื่อ และเบ็ดตกปลา
+    │   ├── items.ts                           # ฐานข้อมูลไอเทมในเกม (อาหารหมู, ทรัฟเฟิล, เมล็ด ฯลฯ)
+    │   └── worldMapData.ts                    # จุดพิกัดบนแผนที่โลก (เมือง, ท่าเรือ, ตลาดกลาง)
+    │
+    ├── components/                            # คอมโพเนนต์หน้าจอและ UI
+    │   ├── FarmWorld.tsx                      # โลกฟาร์มหลัก (Isometric Canvas, แปลง, สัตว์, สิ่งปลูกสร้าง)
+    │   ├── FarmView.tsx                       # หน้าจอฟาร์มเฉพาะทางพร้อมคอกหมู 3D Pig3D คุ้ยเห็ดทรัฟเฟิล
+    │   ├── TopHUD.tsx                         # แถบแสดง เลเวล, ค่าประสบการณ์ (EXP), เงินเหรียญ, เพชร
+    │   ├── PlayerHeader.tsx                   # หัวโปรไฟล์ผู้เล่น, รูป Avatar, สถิติ
+    │   ├── BottomDock.tsx                     # แท่นเครื่องมือด้านล่าง (คลัง, ตลาด, ภารกิจ, ผลิต, สร้าง)
+    │   ├── LeftMenu.tsx                       # เมนูลัดด้านซ้าย (เสียง, ฟิสิกส์, แผนที่, บันทึก)
+    │   ├── RightMenu.tsx                      # เมนูลัดด้านขวา (กล่องของขวัญ, จดหมาย, เพื่อน, ตั้งค่า)
+    │   ├── LoadingScreen.tsx                  # หน้าจอ Splash / Loading โหลดทรัพยากร
+    │   ├── DocumentationModal.tsx             # หน้าต่างคู่มือและวิธีเล่น
+    │   ├── ExportModal.tsx                    # หน้าต่าง Export ข้อมูลและบันทึก
+    │   ├── AudioPanel.tsx                     # แผงปรับระดับเสียง FX และ BGM
+    │   ├── PhysicsPanel.tsx                   # แผงตั้งค่าฟิสิกส์แอนิเมชัน
+    │   ├── Skeleton3DPanel.tsx                # แผงตรวจสอบและปรับแต่ง Skeleton 3D
+    │   ├── StudioCanvas169.tsx                # กรอบแสดงผลอัตราส่วน 16:9
+    │   ├── AmuletExtensionPanel.tsx           # ระบบพระเครื่อง/ส่วนเสริม Amulet
+    │   │
+    │   ├── common/                            # คอมโพเนนต์ส่วนกลาง
+    │   │   └── Toast.tsx                      # ระบบป็อปอัปแจ้งเตือนข้อความ (Toast Alerts)
+    │   │
+    │   ├── hud/                               # ชิ้นส่วน Head-Up Display
+    │   │   ├── TopHUD.tsx                     # HUD ด้านบน
+    │   │   └── PlayerHeader.tsx               # ส่วนแสดงหัวผู้เล่น
+    │   │
+    │   ├── dock/                              # แผงควบคุม Dock และเมนูด้านข้าง
+    │   │   ├── BottomDock.tsx                 # แถบนำทางด้านล่าง
+    │   │   ├── LeftMenu.tsx                   # เมนูด้านซ้าย
+    │   │   └── RightMenu.tsx                  # เมนูด้านขวา
+    │   │
+    │   ├── panels/                            # แผงตั้งค่าและคอนโทรลเลอร์เสริม
+    │   │   ├── AudioPanel.tsx                 # แผงควบคุมเสียง
+    │   │   ├── PhysicsPanel.tsx               # แผงควบคุมฟิสิกส์
+    │   │   ├── Skeleton3DPanel.tsx            # แผงควบคุมโครงกระดูก 3D
+    │   │   └── AmuletExtensionPanel.tsx       # แผงระบบเครื่องราง
+    │   │
+    │   ├── farm/                              # ส่วนประกอบของฟาร์มและการเพาะปลูก
+    │   │   ├── FarmWorld.tsx                  # โลกฟาร์ม
+    │   │   ├── IsometricPlot3D.tsx            # แปลงเพาะปลูกระบบ Isometric 3D SVG พร้อมเอฟเฟกต์
+    │   │   ├── FreePlot.tsx                   # แปลงแบบอิสระปรับตำแหน่งได้
+    │   │   ├── FarmControls.tsx               # ปุ่มซูมเข้า/ออก ปรับมุมกล้อง และโหมดจัดฟาร์ม
+    │   │   ├── EntityToolbar.tsx              # แถบเครื่องมือจัดการย้าย/ลบ/อัปเกรดสิ่งของ
+    │   │   ├── HarvestTool.tsx                # เคียวและอุปกรณ์เกี่ยวข้าว
+    │   │   ├── HarvestSystem.ts               # ระบบคำนวณคอมโบและผลผลิตการเก็บเกี่ยว
+    │   │   ├── BuildableCatalogModal.tsx      # เมนูเลือกสั่งสร้างสิ่งปลูกสร้าง
+    │   │   ├── controls/                      # ตัวควบคุมเครื่องมือฟาร์ม
+    │   │   │   ├── EntityToolbar.tsx          # แถบย้าย/หมุน/ลบ
+    │   │   │   └── FarmControls.tsx           # ปุ่มซูมและควบคุมมุมมอง
+    │   │   ├── plots/                         # โมเดลแปลงปลูก
+    │   │   │   ├── FreePlot.tsx               # แปลงอิสระ
+    │   │   │   └── IsometricPlot3D.tsx        # แปลง Isometric
+    │   │   ├── tools/                         # เครื่องมือทำฟาร์ม
+    │   │   │   └── HarvestTool.tsx            # เคียวเก็บเกี่ยว
+    │   │   └── harvest/                       # ระบบตรรกะเก็บเกี่ยว
+    │   │       └── HarvestSystem.ts           # เครื่องคำนวณคอมโบ
+    │   │
+    │   ├── modals/                            # หน้าต่างป็อปอัปทั้งหมด (Modal Dialogs)
+    │   │   ├── AppModals.tsx                  # จุดรวมและจัดการเปิด/ปิด Modal ทุกตัว
+    │   │   ├── SeedPickerModal.tsx            # หน้าต่างเลือกเมล็ดพันธุ์เพื่อปลูก
+    │   │   ├── AnimalCareModal.tsx            # หน้าต่างให้อาหารและดูแลสัตว์ (พร้อมแท็บ 3D Chicken & Pig)
+    │   │   ├── PigFeedMixerModal.tsx          # เครื่องผสมอาหารหมูสูตรพิเศษ
+    │   │   ├── ProductionModal.tsx            # โรงงานแปรรูป (เบเกอรี่, แยม, ผลิตภัณฑ์นม)
+    │   │   ├── MarketModal.tsx                # ตลาดสดส่งออเดอร์ทางรถกระบะ
+    │   │   ├── ShopModal.tsx                  # ร้านค้าซื้อเมล็ด ปุ๋ย สัตว์ และของตกแต่ง
+    │   │   ├── InventoryModal.tsx             # คลังเก็บผลผลิต ยุ้งฉาง และไอเทม
+    │   │   ├── QuestsModal.tsx                # กระดานภารกิจประจำวันและเควสต์หลัก
+    │   │   ├── DailyRewardsModal.tsx          # รับรางวัลล็อกอินรายวัน
+    │   │   ├── LevelUpModal.tsx               # หน้าจอฉลองเลเวลอัปและปลดล็อกฟังก์ชัน
+    │   │   ├── EventsModal.tsx                # หน้าต่างกิจกรรมพิเศษ
+    │   │   ├── HouseUpgradeModal.tsx          # หน้าต่างอัปเกรดบ้าน
+    │   │   ├── FishingDockModal.tsx           # ท่าเทียบเรือและมินิเกมตกปลา
+    │   │   ├── WorldMapModal.tsx              # แผนที่โลกเดินทางไปยังสถานที่ต่างๆ
+    │   │   ├── FriendsModal.tsx               # ระบบเพื่อนและทำเนียบชาวสวน
+    │   │   ├── VisitFriendModal.tsx           # แวะเยี่ยมชมและช่วยรดน้ำฟาร์มเพื่อน
+    │   │   ├── GiftBoxModal.tsx               # กล่องรับของขวัญและพัสดุ
+    │   │   ├── MailModal.tsx                  # กล่องจดหมายข่าวและรางวัล
+    │   │   ├── BuildModal.tsx                 # หน้าต่างเลือกร้านค้าก่อสร้าง
+    │   │   ├── CloudSyncModal.tsx             # บันทึกข้อมูลคลาวด์และโหลดเซฟ
+    │   │   ├── SettingsModal.tsx              # ตั้งค่ากราฟิก เสียง ภาษา และบัญชี
+    │   │   ├── AuthModal.tsx                  # หน้าเข้าสู่ระบบและสมัครสมาชิก
+    │   │   ├── AiChodChatModal.tsx            # สนทนากับตัวละครคุณยาย/ผู้ใหญ่บ้าน
+    │   │   ├── LogoInfoModal.tsx              # ข้อมูลโลโก้และเครดิตเกม
+    │   │   │
+    │   │   ├── animal/                        # โมดัลและคอมโพเนนต์หมวดสัตว์
+    │   │   │   ├── AnimalCareModal.tsx        # ให้อาหาร/เก็บผลผลิต/สลับ 3D
+    │   │   │   ├── PigFeedMixerModal.tsx      # ผสมอาหารหมู
+    │   │   │   └── IsometricPig3D.tsx         # Re-export โมเดลหมูไอโซเมตริก
+    │   │   ├── events/                        # โมดัลหมวดกิจกรรม
+    │   │   │   └── EventsModal.tsx            # รายการอีเวนต์
+    │   │   ├── fishing/                       # โมดัลหมวดตกปลา
+    │   │   │   └── FishingDockModal.tsx       # ท่าตกปลา
+    │   │   ├── house/                         # โมดัลหมวดบ้าน
+    │   │   │   └── HouseUpgradeModal.tsx      # อัปเกรดบ้าน
+    │   │   ├── inventory/                     # โมดัลหมวดยุ้งฉาง
+    │   │   │   └── InventoryModal.tsx         # จัดการคลัง
+    │   │   ├── market/                        # โมดัลหมวดตลาด
+    │   │   │   └── MarketModal.tsx            # ส่งออเดอร์
+    │   │   ├── production/                    # โมดัลหมวดการแปรรูป
+    │   │   │   └── ProductionModal.tsx        # โรงงานผลิต
+    │   │   ├── quests/                        # โมดัลหมวดเควสต์
+    │   │   │   └── QuestsModal.tsx            # กระดานภารกิจ
+    │   │   ├── rewards/                       # โมดัลหมวดรางวัล
+    │   │   │   ├── DailyRewardsModal.tsx      # รางวัลรายวัน
+    │   │   │   └── LevelUpModal.tsx           # รางวัลเลเวลอัป
+    │   │   ├── seed/                          # โมดัลหมวดเมล็ดพันธุ์
+    │   │   │   └── SeedPickerModal.tsx        # เลือกเมล็ด
+    │   │   ├── settings/                      # โมดัลหมวดตั้งค่า
+    │   │   │   └── SettingsModal.tsx          # ปรับแต่งเกม
+    │   │   ├── shop/                          # โมดัลหมวดร้านค้า
+    │   │   │   └── ShopModal.tsx              # ซื้อของในเกม
+    │   │   ├── social/                        # โมดัลหมวดสังคมและเพื่อน
+    │   │   │   ├── FriendsModal.tsx           # เพื่อน
+    │   │   │   ├── GiftBoxModal.tsx           # ของขวัญ
+    │   │   │   ├── MailModal.tsx              # จดหมาย
+    │   │   │   └── VisitFriendModal.tsx       # เยี่ยมฟาร์ม
+    │   │   ├── system/                        # โมดัลระบบหลัก
+    │   │   │   ├── AiChodChatModal.tsx        # พูดคุยกับยายชอด
+    │   │   │   ├── AuthModal.tsx              # บัญชีผู้ใช้
+    │   │   │   ├── BuildModal.tsx             # ก่อสร้าง
+    │   │   │   ├── CloudSyncModal.tsx         # ซิงค์เซฟ
+    │   │   │   └── LogoInfoModal.tsx          # เครดิต
+    │   │   └── world/                         # โมดัลหมวดแผนที่
+    │   │       └── WorldMapModal.tsx          # แผนที่โลก
+    │   │
+    │   └── 3d/                                # โมเดลและฉาก 3D Procedural Three.js
+    │       ├── Plot3D.tsx                     # แปลงผัก 3D
+    │       ├── FarmCrops3D.tsx                # ต้นพืช 3D ตามขั้นตอนการเติบโต
+    │       ├── AnimatedCrop3D.tsx             # แอนิเมชันลมพัดต้นข้าว
+    │       ├── DraggableCorn3D.tsx            # ต้นข้าวโพดลากวางได้
+    │       ├── CornPlot3D.tsx                 # แปลงข้าวโพด 3D
+    │       ├── House3D.tsx                    # ตัวบ้านชาวสวน 3D
+    │       ├── Tree3D.tsx                     # ต้นไม้ 3D
+    │       ├── Well3D.tsx                     # บ่อน้ำ 3D
+    │       ├── Truck3D.tsx                    # รถกระบะ 3D
+    │       ├── Bakery3D.tsx                   # อาคารเบเกอรี่ 3D
+    │       ├── BakeryOven3D.tsx               # เตาอบ 3D
+    │       ├── Dairy3D.tsx                    # โรงผลิตนม 3D
+    │       ├── Jam3D.tsx                      # โรงผลิตแยม 3D
+    │       ├── Cow3D.tsx                      # วัว 3D
+    │       ├── Chicken3D.tsx                  # ไก่ 3D เคลื่อนไหวกระพือปีกและออกไข่
+    │       ├── Pig3D.tsx                      # หมู 3D Interactive (เดิน ดม คุ้ยหาเห็ดทรัฟเฟิล ส่งเสียงร้อง)
+    │       ├── IsometricPig3D.tsx             # หมู Isometric 3D สำหรับฉาก FarmWorld
+    │       ├── Sheep3D.tsx                    # แกะ 3D ขนปุกปุย
+    │       ├── Goat3D.tsx                     # แพะ 3D พร้อมเขาและเครา
+    │       ├── EmeraldLake3D.tsx              # สระน้ำมรกต 3D
+    │       ├── FarmCharacters3D.tsx           # ตัวละครคนทำฟาร์ม 3D
+    │       ├── LightningClawLogo3D.tsx        # โลโก้สายฟ้า 3D
+    │       │
+    │       ├── models/                        # จัดหมวดหมู่โมเดลแยกตามประเภท
+    │       │   ├── animals/                   # สัตว์ 3D
+    │       │   │   ├── Chicken3D.tsx          # ไก่ 3D
+    │       │   │   ├── Cow3D.tsx              # วัว 3D
+    │       │   │   ├── Pig3D.tsx              # หมู 3D
+    │       │   │   ├── IsometricPig3D.tsx     # หมู Isometric 3D
+    │       │   │   ├── Sheep3D.tsx            # แกะ 3D
+    │       │   │   └── Goat3D.tsx             # แพะ 3D
+    │       │   ├── buildings/                 # สิ่งปลูกสร้าง 3D
+    │       │   │   ├── Bakery3D.tsx           # เบเกอรี่
+    │       │   │   ├── BakeryOven3D.tsx       # เตาอบ
+    │       │   │   ├── Dairy3D.tsx            # โรงนม
+    │       │   │   ├── House3D.tsx            # บ้าน
+    │       │   │   ├── Jam3D.tsx              # โรงแยม
+    │       │   │   └── Well3D.tsx             # บ่อน้ำ
+    │       │   └── props/                     # อุปกรณ์และวัตถุตกแต่ง 3D
+    │       │       ├── AnimatedCrop3D.tsx     # ข้าวพริ้วไหว
+    │       │       ├── CornPlot3D.tsx         # แปลงข้าวโพด
+    │       │       ├── DraggableCorn3D.tsx    # ข้าวโพดลากได้
+    │       │       ├── EmeraldLake3D.tsx      # ทะเลสาบ
+    │       │       ├── FarmCharacters3D.tsx   # ตัวละคร
+    │       │       ├── FarmCrops3D.tsx        # พืชผล
+    │       │       ├── LightningClawLogo3D.tsx# โลโก้ 3D
+    │       │       ├── Plot3D.tsx             # แปลงปลูก
+    │       │       ├── Tree3D.tsx             # ต้นไม้
+    │       │       └── Truck3D.tsx            # รถกระบะ
+    │
+    ├── utils/                                 # ฟังก์ชันอำนวยความสะดวก
+    │   ├── audio.ts                           # ระบบเสียงสังเคราะห์ Web Audio (Click, Harvest, Chime, Pop, Coin)
+    │   ├── orderGenerator.ts                  # สุ่มสร้างรายการออเดอร์ตลาด
+    │   ├── threeTextures.ts                   # สร้างพื้นผิว Texture 3D แบบ Procedural
+    │   ├── auth.ts                            # จัดการตรวจสอบสิทธิ์และเซสชัน
+    │   ├── firebase.ts                        # ตัวเชื่อมต่อ Firebase Client
+    │   ├── aiSpeech.ts                        # สังเคราะห์เสียงพูด AI Speech Synthesis
+    │   ├── aiChodBrain.ts                     # ตรรกะบทสนทนาตัวละครคุณยายชอด
+    │   ├── audio/                             # ส่วนขยายโมดูลเสียง
+    │   │   ├── audio-tier.ts                  # ระดับคุณภาพเสียง
+    │   │   └── index.ts                       # จุดรวมโมดูลเสียง
+    │   ├── ai/                                # ตรรกะปัญญาประดิษฐ์ในเกม
+    │   │   ├── aiSpeech.ts                    # สังเคราะห์เสียงพูด
+    │   │   └── aiChodBrain.ts                 # โครงข่ายบทสนทนา
+    │   ├── generators/                        # ตัวสุ่มสร้างข้อมูล
+    │   │   └── orderGenerator.ts              # ตัวสร้างออเดอร์
+    │   └── three/                             # ตัวช่วย Three.js
+    │       ├── anatomy-3d-engine.ts           # เอนจินกายวิภาค 3D
+    │       └── threeTextures.ts               # พื้นผิว Procedural
+    │
+    ├── three/                                 # โมดูล Three.js ระดับลึก
+    │   └── anatomy-3d-engine.ts               # ระบบจำลองโครงสร้าง 3D Anatomy
+    │
+    ├── audio/                                 # ระบบเสียง
+    │   └── audio-tier.ts                      # จัดการคุณภาพและช่องสัญญาณเสียง
+    │
+    ├── security/                              # ระบบความปลอดภัยและป้องกันการโกง
+    │   ├── index.ts                           # ส่งออกระบบความปลอดภัยทั้งหมด
+    │   ├── antiCheat.ts                       # ตรวจจับการเร่งเวลาหรือแก้ค่าเงินผิดปกติ
+    │   ├── crypto.ts                          # การเข้ารหัสข้อมูลเซฟ
+    │   ├── integrity.ts                       # ตรวจสอบความถูกต้องของ State
+    │   ├── rateLimiter.ts                     # ป้องกันการสแปมคลิกและ Action ถี่เกินไป
+    │   ├── secureStorage.ts                   # LocalStorage แบบเข้ารหัส
+    │   ├── securityLog.ts                     # บันทึกประวัติความปลอดภัย
+    │   ├── sanitizer.ts                       # ป้องกัน XSS และทำความสะอาดข้อมูลนำเข้า
+    │   ├── timeGuard.ts                       # ป้องกันการแก้เวลาระบบเพื่อเร่งการเติบโต
+    │   ├── anti-cheat/                        # โมดูลย่อยป้องกันการโกง
+    │   │   ├── antiCheat.ts                   # กฎความปลอดภัย
+    │   │   └── timeGuard.ts                   # ยามเฝ้าเวลา
+    │   ├── runtime/                           # ตัวเฝ้าระวังขณะรันไทม์
+    │   │   ├── integrity.ts                   # ตรวจความสมบูรณ์
+    │   │   ├── rateLimiter.ts                 # ตรวจความถี่คำสั่ง
+    │   │   └── sanitizer.ts                   # กรองข้อมูล
+    │   ├── storage/                           # ระบบจัดเก็บแบบปลอดภัย
+    │   │   ├── crypto.ts                      # เข้ารหัส
+    │   │   └── secureStorage.ts               # โครงสร้างเก็บข้อมูล
+    │   └── log/                               # บันทึกความปลอดภัย
+    │       └── securityLog.ts                 # ประวัติเหตุการณ์
+    │
+    ├── physics/                               # เอนจินฟิสิกส์แอนิเมชัน
+    │   ├── tmj-engine.ts                      # ระบบฟิสิกส์การเคลื่อนไหว (Verlet / Spring Dynamics)
+    │   └── hair-rig.ts                        # ระบบกระดูกจำลองการพริ้วไหวของเส้นผมและใบไม้
+    │
+    ├── avatar/                                # ระบบเรนเดอร์อวตาร
+    │   └── avatar-renderer.ts                 # จัดการแสดงผลอวตารผู้เล่น
+    │
+    ├── export/                                # ระบบส่งออกข้อมูล
+    │   ├── fb-share.ts                        # ระบบแชร์ฟาร์มไปยังโซเชียล
+    │   └── video-exporter.ts                  # เรนเดอร์คลิปฟาร์มเป็นวิดีโอ
+    │
+    ├── amulet/                                # ส่วนเสริมระบบเครื่องราง
+    │   └── amulet-extension.ts                # คำนวณบัฟและโชคลาภในการเพาะปลูก
+    │
+    └── assets/images/                         # รูปภาพกราฟิกภายใน src
+        ├── cow_mascot_logo_1790916726207.jpg  # โลโก้มาสคอตวัว
+        ├── farmer_boy_avatar_1790916713349.jpg# อวตารเด็กหนุ่มชาวสวน
+        ├── farmer_girl_avatar_1790921288400.jpg# อวตารเด็กสาวชาวสวน
+        ├── farm_isometric_bg_1790921273637.jpg# พื้นหลังไอโซเมตริก
+        ├── loading_screen_1790931728312.jpg   # หน้าจอโหลด
+        ├── oui_bang_khae_avatar_1790921300446.jpg # อวตารอุ๊ยบางแค
+        └── wooden_boat.png                    # รูปเรือไม้
+
+--------------------------------------------------------------------------------
+3. วงจรการทำงานหลักของเกม (CORE GAME LOOP IN App.tsx & STORES)
+--------------------------------------------------------------------------------
+1. Player Stats & Economy:
+   - coins (เหรียญทอง): ใช้ซื้อเมล็ดพันธุ์, ปลดล็อกสิ่งปลูกสร้าง, ซื้อสัตว์, ขยายแปลง
+   - diamonds (เพชร): ใช้เร่งเวลา, ปลดล็อกช่องพิเศษ, สกินพิเศษ
+   - level (เลเวล) & exp (ค่าประสบการณ์): เมื่อ EXP ครบตามเกณฑ์ จะเรียก LevelUpModal ปลดล็อกพืชและสัตว์ใหม่
+   - energy (พลังงาน) & maxEnergy: ใช้ในการเกี่ยวข้าว, ตกปลา, ให้อาหารสัตว์ ฟื้นฟูอัตโนมัติตามเวลา
+
+2. Farm & World State:
+   - plots: อาร์เรย์ของแปลงเพาะปลูก (id, cropId, plantTime, harvestTime, state, isWatered, x, y)
+   - animals: รายการสัตว์เลี้ยง (id, type, fedTime, readyTime, state)
+     * เล้าไก่ (Chicken Coop): ผลิตไข่ไก่ (Egg)
+     * คอกวัว (Cow Pen): ผลิตนมสด (Milk)
+     * คอกหมู (Pig Pen): ผลิตเห็ดทรัฟเฟิล (Truffle) ผ่านโมเดล 3D Pig3D
+     * คอกแกะ/แพะ (Sheep & Goat Pen): ผลิตขนแกะ (Wool) และนมแพะ (Goat Milk)
+   - inventory: ยุ้งฉางเก็บพืชผลและวัตถุดิบ (ข้าวสาลี, ข้าวโพด, มะเขือเทศ, อาหารสัตว์, ทรัฟเฟิล ฯลฯ)
+   - orders: ออเดอร์ของรถส่งของ (รายการสินค้าที่ต้องส่ง + ผลตอบแทนเหรียญและ EXP)
+   - quests: ภารกิจประจำวันและเป้าหมายความสำเร็จ
+   - activeFarm: สลับมุมมองระหว่าง 'farm' (ฟาร์มหลัก) และ 'lake' (ท่าตกปลา)
+   - isEditMode: โหมดจัดฟาร์ม (ย้ายแปลง ลบแปลง เพิ่มแปลง ขยับสิ่งของ)
+
+3. Harvesting & Sowing Lifecycle:
+   - ปลูก (Planting): เลือกแปลง -> เปิด SeedPickerModal -> หักเมล็ด -> บันทึก plantTime & harvestTime
+   - เติบโต (Growing): ตรวจสอบเวลาผ่าน TimeGuard และ GameConstants
+   - รดน้ำ (Watering): เร่งเวลาเติบโตร้อยละ 30 พร้อมประกายละอองน้ำ
+   - เก็บเกี่ยว (Harvesting): ลากเคียวหรือคลิกแปลง -> รับผลผลิต 10 ชิ้นต่อแปลง -> คำนวณคอมโบ -> มอบ EXP & เหรียญ -> เล่นเสียง Chime
+
+4. Pig Truffle & Animal System (ระบบหมูคุ้ยเห็ดทรัฟเฟิล 3 มิติ):
+   - การให้อาหาร (Feeding): ผู้เล่นโปรยอาหารหมู (Pig Feed) ผ่านปุ่มใน Pig3D หรือ AnimalCareModal
+   - การหาผลผลิต (Foraging): หมูจะเริ่มดมกลิ่น ดุ๊กดิ๊ก ดำผุดดำว่ายในดิน
+   - สุกงอมและเก็บผลผลิต (Collecting): เมื่อครบเวลา เห็ดทรัฟเฟิลจะเด้งขึ้นเหนือตัวหมู ผู้เล่นคลิกเก็บเพื่อนำเข้าคลัง
+   - การขาย (Selling): นำเห็ดทรัฟเฟิลไปขายเพื่อรับเหรียญทองราคาสูง (+120 G ต่อดอก)
+
+--------------------------------------------------------------------------------
+4. ประวัติการแก้ไขข้อผิดพลาดสำคัญ (RESOLVED ISSUES LOG)
+--------------------------------------------------------------------------------
+1. แก้ไขปัญหา React Duplicate Key ในการเรนเดอร์สัตว์ (pen_goat_init):
+   - แก้ไขปัญหา Encountered two children with the same key `%s` (pen_goat_init)
+   - ตรวจสอบและให้คีย์ของทุก entity และ animal pen มีความเฉพาะตัว (Unique Keys) เพื่อให้ React reconcile ได้อย่างมีเสถียรภาพ
+
+2. เชื่อมโยงและปรับปรุงระบบหมู 3D (Pig3D & IsometricPig3D):
+   - ซิงค์ Interface `PigEntity` และ `IsometricPig3DProps` ระหว่าง `src/components/3d/models/animals/IsometricPig3D.tsx` และโมดัลต่างๆ
+   - รองรับพร็อพ `name`, `breed`, `weightKg`, `onOpenScroll`
+   - สร้างไฟล์สะพาน Re-export ที่ `src/components/3d/IsometricPig3D.tsx` และ `src/components/modals/animal/IsometricPig3D.tsx` เพื่อให้ทุกจุดอ้างอิงเป็น Single Source of Truth
+   - สร้าง `src/components/3d/models/animals/Pig3D.tsx` ให้ Re-export จาก `src/components/3d/Pig3D.tsx` ป้องกันปัญหา Path ผิดพลาด
+
+3. เพิ่มระบบคลังและร้านค้าสำหรับอาหารหมูและเห็ดทรัฟเฟิล:
+   - สร้าง `src/store/useFarmStore.ts` เพื่อจัดการสถานะเหรียญ, คลังไอเทม, และรอบเวลาการกินอาหารของหมู
+   - สร้าง `src/data/items.ts` เก็บข้อมูลไอเทม `pig_feed`, `truffle`
+   - สร้าง `src/components/FarmView.tsx` รองรับการเรียกใช้ `Pig3D` อย่างสมบูรณ์
+
+4. เพิ่ม Interactive 3D Animal Selection ใน AnimalCareModal:
+   - เพิ่มแถบเลือกสัตว์ 3D ในหน้าต่างดูแลสัตว์ (ไก่ไข่อารมณ์ดี 🐔 / หมูคุ้ยทรัฟเฟิล 🐷)
+   - ผู้เล่นสามารถสลับดูโมเดล 3D แบบ Interactive ให้อาหาร และเก็บผลผลิตได้ทันทีในหน้าต่างเดียว
+
+5. ซ่อมแซมโมดูลผสมอาหารหมู (PigFeedMixerModal):
+   - ย้ายและปรับการอ้างอิงให้ถูกต้อง
+   - แก้ไข lint error การเรียกใช้ฟังก์ชันเสียง Web Audio
+
+6. แก้ไขบั๊กการแสดงผลผลผลิตการเกี่ยวข้าว (Reap Floating FX):
+   - ปรับข้อความตัวเลขลอยจาก "+2" ให้เป็น "+10" ตามผลผลิต 10 หน่วยที่ได้รับจริงในยุ้งฉาง
+
+7. ป้องกันปัญหาพิกัดแปลงผักลอยหลุดจอนอกหน้าจอ:
+   - ปรับปรุงการคำนวณตำแหน่งเริ่มต้น (Fallback Coordinates) ใน FarmWorld.tsx ให้ใช้ดัชนีของอาร์เรย์ (plotIndex % 5) ป้องกันแปลงที่เกิดจาก Timestamp กระโดดออกนอกหน้าจอ
+
+--------------------------------------------------------------------------------
+5. ไดอะแกรมสถาปัตยกรรมระบบ (SYSTEM ARCHITECTURE DIAGRAM)
+--------------------------------------------------------------------------------
+
+┌────────────────────────────────────────────────────────┐
+│                        App.tsx                         │
+│   (Central Controller / Game Loop / Modals Router)     │
+└───────────┬────────────────────────────────┬───────────┘
+            │                                │
+            ▼                                ▼
+┌───────────────────────┐        ┌───────────────────────┐
+│     FarmWorld.tsx     │        │     AppModals.tsx     │
+│ (Main Isometric View) │        │ (Unified Modal Hub)   │
+└───────────┬───────────┘        └───────────┬───────────┘
+            │                                │
+            ├─► IsometricPlot3D (Plots)      ├─► AnimalCareModal (Chicken3D / Pig3D)
+            ├─► FarmCharacters3D (Avatar)    ├─► SeedPickerModal
+            ├─► Buildings 3D (Bakery, Dairy) ├─► PigFeedMixerModal
+            └─► IsometricPig3D (Animals)     ├─► MarketModal / InventoryModal
+                                             └─► Quests / Fishing / Shop
+
+┌──────────────────┐
+│   PigEntity      │
+│                  │
+│ id               │
+│ x / y            │
+│ fedAt            │
+│ durationSec      │
+│ isReady          │
+│ produceName      │
+│ produceIcon      │
+└────────┬─────────┘
+         │
+         ▼
+┌─────────────────────┐
+│   Pig Game System   │
+│ (useFarmStore.ts)   │
+│                     │
+│ Feeding             │
+│ Production Timer    │
+│ Truffle Harvesting  │
+│ Market Truffle Sale │
+└──────────┬──────────┘
+         │
+         ▼
+┌─────────────────────┐
+│    Pig3D Engine     │
+│   (Three.js Mesh)   │
+│                     │
+│ Roaming & Sniffing  │
+│ Eating Animation    │
+│ Truffle Pop FX      │
+│ Interactive Speech  │
+└─────────────────────┘
+
+================================================================================
+จบเอกสารโครงสร้างระบบทั้งหมด - เก็บรักษาไว้อย่างสมบูรณ์และอัปเดตเป็นปัจจุบัน 100%
+================================================================================

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- ล็อก Viewport เต็มจอ 100%, ปิดการซูมด้วยนิ้ว และขยายพื้นที่คลุมรอยบาก (Notch) -->
+    <meta 
+      name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no, interactive-widget=resizes-content" 
+    />
+    
+    <!-- ปรับแต่งแถบสถานะ (Status Bar) ของมือถือให้กลืนกับธีมเกมโทนไม้/กลางคืน -->
+    <meta name="theme-color" content="#1c1917" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- PWA: ติดตั้งเป็นแอปบน Android ได้ -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    
+    <title>Beam Farm (B.P.)</title>
+    <meta name="description" content="เกมจำลองฟาร์มแสนสุข Beam Farm (B.P.) ปลูกพืช เลี้ยงสัตว์ แปรรูปสินค้า ทำภารกิจ ค้าขาย และส่งของขวัญให้เพื่อน" />
+    
+    <!-- L6: Content-Security-Policy (CSP) ป้องกัน XSS และ Injection -->
+    <meta 
+      http-equiv="Content-Security-Policy" 
+      content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' ws: wss: https: blob: data:; media-src 'self' data: blob:;"
+    />
+    
+    <!-- Open Graph & Social Cards -->
+    <meta property="og:title" content="Beam Farm (B.P.)" />
+    <meta property="og:description" content="เกมจำลองฟาร์มแสนสุข Beam Farm (B.P.) ปลูกพืช เลี้ยงสัตว์ แปรรูปสินค้า ทำภารกิจ ค้าขาย และส่งของขวัญให้เพื่อน" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Preconnect ฟอนต์ Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" 
+      rel="stylesheet" 
+    />
+
+    <!-- CSS Reset ระดับ Root ป้องกันจอดิ้น/จอขาว -->
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        height: 100dvh;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #1c1917;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
